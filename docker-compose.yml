@@ -123,12 +123,6 @@ services:
         condition: service_healthy
       tari:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3333/stats || exit 1"]
-      interval: 30s       
-      timeout: 10s        
-      retries: 3
-      start_period: 60s 
 
   dashboard:
       build: ./build/dashboard
@@ -141,9 +135,6 @@ services:
         - /home:/data:ro
         - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
       network_mode: "host"
-      depends_on:
-        p2pool:
-          condition: service_healthy
 
 networks:
   mining_net:

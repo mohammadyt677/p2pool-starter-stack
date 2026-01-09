@@ -4,7 +4,7 @@ Monero + Tari Merge Mining Docker Stack
 <img src="./images/dashboard.png" width="100%" alt="Sample dashboard" />
 
 
-A high-performance, containerized stack for running a private Monero full node with P2Pool and Tari merge mining. This setup includes a custom monitoring dashboard for real-time visibility into your node and worker health.
+A high-performance, containerized stack for running a private Monero full node with P2Pool and Tari merge mining. This setup includes a custom monitoring dashboard for real-time visibility into your node and worker health. By default configured to use P2Pool Mini.
 
 ⚠️ Disclaimer
 -------------
@@ -30,6 +30,11 @@ A high-performance, containerized stack for running a private Monero full node w
 --------------
 
 0. **Pre-Requisites** Install Ubuntu Server 24.04 and [Docker Engine](https://docs.docker.com/engine/install/ubuntu/). Also recommended to follow [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/)
+
+Recommended to install avahi-daemon
+```bash
+sudo apt install avahi-daemon
+```
 
 1.  **Configure huge pages** Huges pages ensures your P2Pool is able to process your worker shares as fast as possible
 ```bash
@@ -78,16 +83,49 @@ chmod +x configure.sh
 5. **Run P2Pool Starter Stack**
 ```bash
 docker compose up -d
+
+# To check syncing
+docker logs -f monerod # very clear to see sync
+docker logs -f tari # little messy and unclear logs, but should sync before monero and will show in dashboard when synced
+docker logs -f p2pool # will not run until monerod is synced
+
+# check resources to see if syncing is happening is also an option
+top
+docker stats
 ```
     
 
 📈 Monitoring
 -------------
 
-Once deployed and synced, the dashboard provides a "single pane of glass". View at: http://localhost:8000
+Once deployed and synced, the dashboard provides a "single pane of glass". View at: http://localhost:8000, or http://\<hostname\>.local:8000 on a computer in your local network
+
+_To get your hostname, run the following on your machine running P2Pool Starter Stack:_
+```bash
+hostname
+```
 
 *   **Hashrate:** Tracks your current network contribution.
     
 *   **Worker Health:** See which workers are "Alive" and their individual performance.
     
 *   **Blockchain Status:** Monitor sync height and status for Tari.
+
+💪 Workers
+-------------
+Recommended workers install avahi-daemon 
+```bash
+sudo apt install avahi-daemon
+```
+Xmrig workers should configure their pool section with the following:
+```jsonc
+"pools": [
+    {
+        "url": "<P2Pool Stack hostname>.local:3333",
+        "user": "<worker hostname>.local",
+        "pass": "x",
+        "keepalive": true,
+        "tls": false
+    }
+  ]
+```
