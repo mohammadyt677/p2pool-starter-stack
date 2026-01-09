@@ -112,7 +112,7 @@ services:
       - --data-api
       - /stats
       - --onion-address
-      - <your_p2pool_onion_address>.onion
+      - <your_p2pool_onion_address>
       - --mini
     networks:
       mining_net:

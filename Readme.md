@@ -29,11 +29,21 @@ A high-performance, containerized stack for running a private Monero full node w
 🚀 Quick Setup
 --------------
 
-0. **Pre-Requisites** Install Ubuntu Server 24.04 and [Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
+0. **Pre-Requisites** Install Ubuntu Server 24.04 and [Docker Engine](https://docs.docker.com/engine/install/ubuntu/). Also recommended to follow [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/)
 
 1.  **Configure huge pages** Huges pages ensures your P2Pool is able to process your worker shares as fast as possible
 ```bash
 sudo sysctl -w vm.nr_hugepages=3072
+
+# To make these changes permanent on reboot, update grub also
+sudo nano /etc/default/grub
+# replace 
+#   GRUB_CMDLINE_LINUX_DEFAULT="" 
+# with
+#   GRUB_CMDLINE_LINUX_DEFAULT="quiet splash hugepagesz=2M hugepages=3072 transparent_hugepages=never"
+# ctrl-x, y to save it
+sudo update-grub
+sudo reboot # reboot the system
 ```
     
 2.  **Clone and Edit:** Clone this repository and update the config.json file with your **XMR Wallet Address**, **Monero Node Username**, **Monero Node Password** and **Tari Wallet Address**. 
@@ -43,23 +53,31 @@ _Note: avoid special characters in Monero node username and password, they may c
 ```bash
 git clone https://github.com/VijitSingh97/p2pool-starter-stack.git
 cd p2pool-starter-stack
-nano config.json #enter your values, ctrl-x, y to save it
+nano config.json 
+# Enter your values
+# ctrl-x, y to save it
 ```
     
 3.  **Start Tor First** 
 ``` bash
 mkdir -p data/tor
-docker-compose up -d tor
+sudo chown -R 100:101 ./data/tor
+docker compose up -d tor
+docker logs tor -f
+# wait for message
+#   Jan 09 07:31:01.000 [notice] Bootstrapped 100% (done): Done
+# ctrl-c to exit
 ```
 
 4. **Apply Your Config**
 ```bash
+chmod +x configure.sh
 ./configure.sh
 ```
 
 5. **Run P2Pool Starter Stack**
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
     
 
