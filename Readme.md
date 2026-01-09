@@ -1,7 +1,7 @@
 Monero + Tari Merge Mining Docker Stack
 =======================================
 
-<img src="./images/dashboard.png" width="20%" alt="Sample dashboard" />
+<img src="./images/dashboard.png" width="50%" alt="Sample dashboard" />
 
 
 A high-performance, containerized stack for running a private Monero full node with P2Pool and Tari merge mining. This setup includes a custom monitoring dashboard for real-time visibility into your node and worker health.
