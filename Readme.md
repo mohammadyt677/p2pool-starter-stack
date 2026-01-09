@@ -41,7 +41,7 @@ sudo sysctl -w vm.nr_hugepages=3072
 _Note: avoid special characters in Monero node username and password, they may conflict with os or application environments._
 
 ```bash
-git clone
+git clone https://github.com/VijitSingh97/p2pool-starter-stack.git
 cd p2pool-starter-stack
 nano config.json #enter your values, ctrl-x, y to save it
 ```
