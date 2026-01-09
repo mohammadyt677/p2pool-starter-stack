@@ -7,8 +7,5 @@ RUN wget https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.4.4.tar.bz2 
     && chmod +x /usr/local/bin/monerod \
     && rm -rf monero-*
 
-RUN mkdir -p /root/.bitmonero
-COPY bitmonero.conf /root/.bitmonero/bitmonero.conf
-
 WORKDIR /root
 ENTRYPOINT ["monerod"]

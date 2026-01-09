@@ -25,6 +25,7 @@ services:
     volumes:
       - ./data/monero:/root/.bitmonero
       - /dev/hugepages:/dev/hugepages
+      - ./build/monero/bitmonero.conf:/root/.bitmonero/bitmonero.conf:ro
     command:
       - --config-file=/root/.bitmonero/bitmonero.conf
       - --non-interactive
