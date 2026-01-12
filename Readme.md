@@ -36,6 +36,8 @@ Recommended to install avahi-daemon
 sudo apt install avahi-daemon
 ```
 
+**Ports:** No ports need to be opened. All inbound and outbound traffic for nodes and p2pool happen through tor.
+
 1.  **Configure huge pages** Huges pages ensures your P2Pool is able to process your worker shares as fast as possible
 ```bash
 sudo sysctl -w vm.nr_hugepages=3072
@@ -84,10 +86,22 @@ chmod +x configure.sh
 ```bash
 docker compose up -d
 
-# To check syncing
-docker logs -f monerod # very clear to see sync
-docker logs -f tari # little messy and unclear logs, but should sync before monero and will show in dashboard when synced
-docker logs -f p2pool # will not run until monerod is synced
+# To check monero syncing
+docker logs -f monerod
+
+# To check tari syncing from shared volume
+tail -f ./data/tari/mainnet/log/base_node/base_layer.log
+# To check tari syncing from inside container
+docker exec -it tari tail -f /var/tari/node/mainnet/log/base_node/base_layer.log
+# should show something like this when synced:
+#   2026-01-12 04:32:39.503325929 [c::bn::comms_interface::inbound_handler] [,] INFO  Block #178542 (724dde31da2fe57b3f9e95fa6f13d0af5c9d92e8443fd6cda8c5acf86925e7fe) received from remote peer: 86d50f956ceb4540c779749e76 // /tari/base_layer/core/src/base_node/comms_interface/inbound_handlers.rs:894
+#   2026-01-12 04:32:40.084482425 [c::cs::database] [,] INFO  Best chain is now at height: 178542 // /tari/base_layer/core/src/chain_storage/blockchain_database.rs:1819
+#   2026-01-12 04:32:48.558532242 [c::bn::state_machine_service::states::listening] [,] INFO  Received a metadata update from a peer that is very far behind us. Disregarding. We are at block #178542 with an accumulated difficulty of 148779641035885625957219873406961382753761137958030855561643542440 and the network chain tip is at #29182 with an accumulated difficulty of 6525812746041971859700020032395057915398438342471264 // base_layer/core/src/base_node/state_machine_service/states/listening.rs:478
+# docker logs -f tari can be used, but little messy and unclear
+
+
+# To check if p2pool is running. P2pool will not run until monero is synced
+docker logs -f p2pool
 
 # check resources to see if syncing is happening is also an option
 top
@@ -127,5 +141,5 @@ Xmrig workers should configure their pool section with the following:
         "keepalive": true,
         "tls": false
     }
-  ]
+]
 ```
